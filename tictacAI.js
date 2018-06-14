@@ -10,97 +10,100 @@ let board = {
     9: 9
 }
 
-let user = 'o'
+let user = 'x'
 let winner = null
 let botNum = 0
+let gameChoice;
 
-// Maybe delete
-let gameChoice = null
+function startGame() {
+    console.log("Welcome to Tic Tac Toe!")
+    console.log("Do you want to play with your friend or yourself?")
+    console.log("Enter 'F' for friend & 'B' for the bot")
+    process.stdin.once('data', (chunk) => {
+        configureGame(chunk)
+    })
+}
 
-console.log("Welcome to Tic Tac Toe!")
-console.log("Do you want to play with your friend or yourself?")
-
-
-console.log("Enter 'F' for friend & 'B' for the bot")
-process.stdin.once('data', (chunk) => {
-    let gameChoice = chunk.toString().trim().toUpperCase()
-
+function configureGame(input) {
+    gameChoice = input.toString().trim().toUpperCase()
     if (gameChoice === "F") { console.log("Friend!!!") }
     else if (gameChoice === "B") { console.log("Bot!!!!!!") }
-    newTurn(user, gameChoice)
-});
+    listen()
+    return gameChoice;
+}
 
-//let game = gameChoice
+function listen() {
+    console.log('Waiting for input... ')
+    newTurn()
+    process.stdin.on('data', (move) => {
+        handleMove(move.toString().trim())
+    });
+}
 
-// FIXME
-let timesThrough = 0;
-
-function newTurn(user, gameChoice) {
-
+function newTurn() {
     console.log("\n")
-    process.stdin.removeAllListeners('data')
-    //console.log('\033[2J');
-    wintest()
-    user = changeUser(user);
     console.log("Your turn " + user.toUpperCase() + "!")
+    displayBoard(board)
     console.log("Enter a number! (1-9)")
     console.log(getMovesLeft(board) + " are the moves left...")
-    displayBoard(board)
-    //console.log(gameChoice)
+}
 
-    if (user === "o" && gameChoice === "B") {               //BOT CODE
-        // FIXME
-        console.log('I AM HERE!!!')
+function isBotMove() {
+    if (user === "o" && gameChoice === "B") {
+        return true
+    }
+}
 
-        botNum = Math.floor(Math.random() * 9 + 1)
-        // getBestMove(board)
+function placeTaken(move) {
+    return (board[move] === "X" || board[move] === "O")
+}
 
-        console.log(botNum)
-        if (board[botNum] === "X" || board[botNum] === "O") {
-            console.log("This space is taken! Go again!")
-            let notUser = "x"
-            newTurn(notUser, gameChoice)
-        }
-        board[botNum] = user.toUpperCase()
-        //displayBoard(board)
-        console.log('Calling gameChoice again with:')
-        console.log(`ROUND: ${timesThrough} USER: ${user}, CHOICE ${gameChoice}`)
-        newTurn(user, gameChoice)
+function handleBotMove() {
+    console.log('Bot Move!!!')
+    choice = Math.floor(Math.random() * 9 + 1)
+    console.log(botNum)
+    
+    if (placeTaken(choice)) {
+        console.log("This space is taken! Go again!")
+        handleBotMove();
     }
 
-    else {                                                  //HUMAN CODE
-        humanEntry(user, gameChoice)
-        function humanEntry(humanUser, gameChoice) {
-            timesThrough += 1;
-            
-            console.log('Round: ' + timesThrough);
-            console.log('Player is: ' + humanUser);
+    board[choice] = user.toUpperCase()
+    user = changeUser();
+    wintest()
+    newTurn()
+}
 
-            console.log("Start Human Entry")
-            process.stdin.once('data', (chunk) => {
-                let userInput = chunk.toString().trim()
+function handleMove(move) {
+    console.log('Move was ' + move);
 
-                let regex = /[1-9]/
-                if (!(userInput.match(regex))) {
-                    console.log("Invalid Input!")
-                    console.log(humanUser + " let's try this again!")
-                    //user = changeUser(humanUser);
-                    humanEntry(humanUser, gameChoice)
-                }
+    if (isBotMove()) {
+    } else {
+        //HUMAN CODE
+        handleHumanTurn(move)
+    }
+    wintest()
+    changeUser();
+    newTurn();
+}
+
+function handleHumanTurn(move) {
+    if (!(move.match(/[1-9]/))) {
+        console.log("Invalid Input!")
+        console.log(user + " let's try this again!")
+        handleMove(move)
+    }
 
 
-                if (board[userInput] === "X" || board[userInput] === "O") {
-                    console.log("This space is taken! Go again!")
-                    humanEntry(humanUser, gameChoice)
+    if (board[move] === "X" || board[move] === "O") {
+        console.log("This space is taken! Go again!")
+        handleMove(move)
 
-                }
-                else {
-                    board[userInput] = humanUser.toUpperCase()
-                    newTurn(humanUser, gameChoice)
-                }
-            });
-            
-        }
+    }
+    else {
+        console.log('I AM THE CATCH ALL!!!')
+        board[move] = user.toUpperCase()
+        newTurn()
     }
 }
 
@@ -113,8 +116,6 @@ function displayBoard(board) {
 
 }
 
-function getBestMove(board) {
-}
 
 function getMovesLeft(board) {
     let regex = /[1-9]/
@@ -229,11 +230,21 @@ function wintest() {
 }
 
 
-function changeUser(user) {
+function changeUser() {
+    // FIXME
     console.log('User is: ' + user);
-    if (user === null) { user = "x" }
-    if (user === "x") { user = 'o' }
-    else { user = "x" }
+
+    if (user === null || user === undefined) {
+        user = "x"
+    } else if (user === "x") {
+        user = 'o'
+    } else {
+        user = "x"
+    }
+
+    // FIXME
     console.log('User is NOW: ' + user);
     return user
 }
+
+startGame();
