@@ -32,7 +32,7 @@ function configureGame(input) {
         listen()
     }
     else if (gameChoice === "B") {
-        console.log("Bot!!!!!!")
+        console.log("Bot!!!")
         listen()
     }
     else if ((gameChoice != "F") && (gameChoice != "B")) {
@@ -96,7 +96,7 @@ function handleBotMove() {
 }
 
 function handleMove(move) {
-    console.log('Move was ' + move);
+    //console.log('Move was ' + move);
 
     if (isBotMove()) {
     } else {
