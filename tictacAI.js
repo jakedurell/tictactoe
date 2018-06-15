@@ -55,7 +55,7 @@ function listen() {
     else {
         console.log('Waiting for input... ')
         process.stdin.on('data', (move) => {
-            handleMove(move.toString().trim())
+             handleHumanTurn(move.toString().trim())
         });
     }
 }
@@ -84,15 +84,13 @@ function handleBotMove() {
     //console.log(botNum)
 
     if (placeTaken(choice)) {
-        //console.log("This space is taken! Go again!")
-        //if (getMovesLeft().length < 5) { wintest(user) }
         handleBotMove();
     }
     else {
         console.log("Bot Moves to space " + choice + "!!!")
         board[choice] = user.toUpperCase()
+        if (getMovesLeft(board).length < 5) { wintest(user) }
         changeUser();
-        if (getMovesLeft().length < 5) { wintest(user) }
         listen()
     }
 }
@@ -105,7 +103,7 @@ function handleMove(move) {
         //HUMAN CODE
         handleHumanTurn(move)
     }
-    if (getMovesLeft().length < 5) { wintest(user) }
+    //if (getMovesLeft(board).length < 5) { wintest(user) }
     //newTurn();
 }
 
@@ -126,9 +124,9 @@ function handleHumanTurn(move) {
     else {
         //console.log('I AM THE CATCH ALL!!!')
         board[move] = user.toUpperCase()
+        //console.log("I AM in handleHumanTurn()" + getMovesLeft(board).length + " moves left")
+        if (getMovesLeft(board).length < 5) { wintest(user) }
         changeUser();
-        console.log("I AM in handleHumanTurn()" + getMovesLeft(board).length + " moves left")
-        if (getMovesLeft().length < 5) { wintest(user) }
         listen();
     }
 }
@@ -161,16 +159,13 @@ function getMovesLeft(board) {
     let array = []
     let i = 0
     let space = null
-    console.log ("Space is: " + space )
     for (let moves in board) {
         space = board[moves].toString()
         if (space.match(regex)) {
             array[i] = board[moves].toString()
             i = i + 1
-            console.log ("Array is: " + array + " length is " + array.length)
         }
     }
-    console.log ("Array is: " + array + " length is " + array.length)
     return array
 }
 
@@ -180,18 +175,24 @@ function wintest(user) {
 
     let winChar  // What character to change numbers to
     let winNums = getWinState(user)
+    console.log(winNums)
+    if (winNums.length != 0) {
+        if (winType === "horizontal") { winChar = "-" }
+        if (winType === "vertical") { winChar = "|" }
+        if (winType === "backslash") { winChar = "\\" }
+        if (winType === "forwardslash") { winChar = "/" }
 
-    if (winType === "horizontal") { winChar = "-" }
-    if (winType === "vertical") { winChar = "|" }
-    if (winType === "backslash") { winChar = "\\" }
-    if (winType === "forwardslash") { winChar = "/" }
+        for (let w = 0; w < 3; w++) { 
+            console.log(board[winNums[w]])
+            board[winNums[w]] = winChar 
+            
+        }
 
-    for (let w = 0; w < 3; w++) { board[w] = winChar }
-
-    console.log("\n" + user.toUpperCase() + " WINS!!!")
-    displayBoard(board)
-    console.log("\n")
-    process.exit()
+        console.log("\n" + user.toUpperCase() + " WINS!!!")
+        displayBoard(board)
+        console.log("\n")
+        process.exit()
+    }
 
 }
 
@@ -199,6 +200,10 @@ function wintest(user) {
 function getWinState(u) {
 
     let winArray = []
+    u = u.toUpperCase()
+    // console.log(u + " is the user. The board is: ")
+    // console.log(board)
+    
 
     if (board[1] === u && board[2] === u && board[3] === u) {
         winArray[0] = 1
@@ -237,15 +242,16 @@ function getWinState(u) {
         winType = "vertical"
     }
     else if (board[1] === u && board[5] === u && board[9] === u) {
-        winArray[0] = 3
-        winArray[1] = 6
+        winArray[0] = 1
+        winArray[1] = 5
         winArray[2] = 9
+        console.log("vertical")
         winType = "backslash"
     }
-    else if (board[7] === u && board[5] === u && board[3] === u) {
+    else if (board[3] === u && board[5] === u && board[7] === u) {
         winArray[0] = 3
-        winArray[1] = 6
-        winArray[2] = 9
+        winArray[1] = 5
+        winArray[2] = 7
         winType = "forwardslash"
     }
     else if (board[1] != 1 && board[2] != 2 && board[3] != 3 &&
