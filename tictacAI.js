@@ -62,7 +62,7 @@ function newTurn() {
     console.log("\n")
     console.log("Your turn " + user.toUpperCase() + "!")
     displayBoard(board)
-    console.log("Enter a number! (1-9)")
+    //console.log("Enter a number! (1-9)")
     console.log(getMovesLeft(board) + " are the moves left...")
 }
 
@@ -122,7 +122,7 @@ function handleHumanTurn(move) {
         listen();
     }
     else {
-        console.log('I AM THE CATCH ALL!!!')
+        //console.log('I AM THE CATCH ALL!!!')
         board[move] = user.toUpperCase()
         changeUser();
         wintest()
