@@ -50,14 +50,30 @@ function listen() {
     else if (newT === false) { newT = true }
 
     if (isBotMove()) {
-        handleBotMove()
+        console.log("Hmmmm...")
+        setTimeout(() => {
+            console.log("Thinking")
+            setTimeout(() => {
+                console.log("Processing")
+                setTimeout(() => {
+                    handleBotMove()
+                }, 2000)
+            }, 2000)
+        }, 2000)
+
+
     }
     else {
         console.log('Waiting for input... ')
         process.stdin.on('data', (move) => {
-             handleHumanTurn(move.toString().trim())
+            handleHumanTurn(move.toString().trim())
         });
     }
+}
+
+function thinkingProcessing() {
+    console.log("Thinking")
+    console.log("Processing")
 }
 
 function newTurn() {
@@ -94,6 +110,8 @@ function handleBotMove() {
         listen()
     }
 }
+
+
 
 function handleMove(move) {
     //console.log('Move was ' + move);
@@ -175,17 +193,17 @@ function wintest(user) {
 
     let winChar  // What character to change numbers to
     let winNums = getWinState(user)
-    console.log(winNums)
+    //console.log(winNums)
     if (winNums.length != 0) {
         if (winType === "horizontal") { winChar = "-" }
         if (winType === "vertical") { winChar = "|" }
         if (winType === "backslash") { winChar = "\\" }
         if (winType === "forwardslash") { winChar = "/" }
 
-        for (let w = 0; w < 3; w++) { 
-            console.log(board[winNums[w]])
-            board[winNums[w]] = winChar 
-            
+        for (let w = 0; w < 3; w++) {
+            //console.log(board[winNums[w]])
+            board[winNums[w]] = winChar
+
         }
 
         console.log("\n" + user.toUpperCase() + " WINS!!!")
@@ -203,7 +221,7 @@ function getWinState(u) {
     u = u.toUpperCase()
     // console.log(u + " is the user. The board is: ")
     // console.log(board)
-    
+
 
     if (board[1] === u && board[2] === u && board[3] === u) {
         winArray[0] = 1
@@ -245,7 +263,6 @@ function getWinState(u) {
         winArray[0] = 1
         winArray[1] = 5
         winArray[2] = 9
-        console.log("vertical")
         winType = "backslash"
     }
     else if (board[3] === u && board[5] === u && board[7] === u) {
@@ -257,7 +274,7 @@ function getWinState(u) {
     else if (board[1] != 1 && board[2] != 2 && board[3] != 3 &&
         board[4] != 4 && board[5] != 5 && board[6] != 6 &&
         board[7] != 7 && board[8] != 8 && board[9] != 9) {
-        console.log("\n" + "Cat's game!!!" + "\n")
+        console.log("\n" + "Cat's game!!! It's a tie!!!" + "\n")
         process.exit()
     }
     return winArray
