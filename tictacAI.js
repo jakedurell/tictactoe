@@ -14,6 +14,7 @@ let user = 'x'
 let winner = null
 let botNum = 0
 let gameChoice;
+let newT = true
 
 function startGame() {
     console.log("Welcome to Tic Tac Toe!")
@@ -26,18 +27,34 @@ function startGame() {
 
 function configureGame(input) {
     gameChoice = input.toString().trim().toUpperCase()
-    if (gameChoice === "F") { console.log("Friend!!!") }
-    else if (gameChoice === "B") { console.log("Bot!!!!!!") }
-    listen()
-    return gameChoice;
+    if (gameChoice === "F") {
+        console.log("Friend!!!")
+        listen()
+    }
+    else if (gameChoice === "B") {
+        console.log("Bot!!!!!!")
+        listen()
+    }
+    else if ((gameChoice != "F") && (gameChoice != "B")) {
+        console.log("Not a Valid Choice. Pick again!")
+        console.log("\n")
+        startGame()
+    }
 }
 
 function listen() {
-    console.log('Waiting for input... ')
-    newTurn()
-    process.stdin.on('data', (move) => {
-        handleMove(move.toString().trim())
-    });
+    if (newT === true) { newTurn() }
+    else if (newT === false) { newT = true }
+
+    if (isBotMove()) {
+        handleBotMove()
+    }
+    else {
+        console.log('Waiting for input... ')
+        process.stdin.on('data', (move) => {
+            handleMove(move.toString().trim())
+        });
+    }
 }
 
 function newTurn() {
@@ -59,19 +76,20 @@ function placeTaken(move) {
 }
 
 function handleBotMove() {
-    console.log('Bot Move!!!')
+
     choice = Math.floor(Math.random() * 9 + 1)
-    console.log(botNum)
-    
+    //console.log(botNum)
+
     if (placeTaken(choice)) {
-        console.log("This space is taken! Go again!")
+        //console.log("This space is taken! Go again!")
         handleBotMove();
     }
-
-    board[choice] = user.toUpperCase()
-    user = changeUser();
-    wintest()
-    newTurn()
+    else {
+        console.log("Bot Moves to space " + choice + "!!!")
+        board[choice] = user.toUpperCase()
+        changeUser();
+        wintest()
+    }
 }
 
 function handleMove(move) {
@@ -83,27 +101,28 @@ function handleMove(move) {
         handleHumanTurn(move)
     }
     wintest()
-    changeUser();
-    newTurn();
+    //newTurn();
 }
 
 function handleHumanTurn(move) {
     if (!(move.match(/[1-9]/))) {
         console.log("Invalid Input!")
         console.log(user + " let's try this again!")
-        handleMove(move)
+        newT = false
+        listen();
     }
 
 
-    if (board[move] === "X" || board[move] === "O") {
+    else if (board[move] === "X" || board[move] === "O") {
         console.log("This space is taken! Go again!")
-        handleMove(move)
-
+        newT = false
+        listen();
     }
     else {
         console.log('I AM THE CATCH ALL!!!')
         board[move] = user.toUpperCase()
-        newTurn()
+        changeUser();
+        listen();
     }
 }
 
@@ -232,8 +251,7 @@ function wintest() {
 
 function changeUser() {
     // FIXME
-    console.log('User is: ' + user);
-
+    //console.log('User is: ' + user);
     if (user === null || user === undefined) {
         user = "x"
     } else if (user === "x") {
@@ -241,9 +259,8 @@ function changeUser() {
     } else {
         user = "x"
     }
-
     // FIXME
-    console.log('User is NOW: ' + user);
+    //console.log('User is NOW: ' + user);
     return user
 }
 
