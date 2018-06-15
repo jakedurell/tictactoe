@@ -14,7 +14,9 @@ let user = 'x'
 let winner = null
 let botNum = 0
 let gameChoice;
-let newT = true
+let newT = true     // New Turn
+let winType = ""    //horizontal, vertical, backslash, forward
+
 
 function startGame() {
     console.log("Welcome to Tic Tac Toe!")
@@ -83,14 +85,14 @@ function handleBotMove() {
 
     if (placeTaken(choice)) {
         //console.log("This space is taken! Go again!")
-        wintest()
+        //if (getMovesLeft().length < 5) { wintest(user) }
         handleBotMove();
     }
     else {
         console.log("Bot Moves to space " + choice + "!!!")
         board[choice] = user.toUpperCase()
         changeUser();
-        wintest()
+        if (getMovesLeft().length < 5) { wintest(user) }
         listen()
     }
 }
@@ -103,7 +105,7 @@ function handleMove(move) {
         //HUMAN CODE
         handleHumanTurn(move)
     }
-    wintest()
+    if (getMovesLeft().length < 5) { wintest(user) }
     //newTurn();
 }
 
@@ -125,7 +127,8 @@ function handleHumanTurn(move) {
         //console.log('I AM THE CATCH ALL!!!')
         board[move] = user.toUpperCase()
         changeUser();
-        wintest()
+        console.log("I AM in handleHumanTurn()" + getMovesLeft(board).length + " moves left")
+        if (getMovesLeft().length < 5) { wintest(user) }
         listen();
     }
 }
@@ -136,130 +139,7 @@ function displayBoard(board) {
     console.log(" " + board[4] + " | " + board[5] + " | " + board[6])
     console.log("--- --- ---")
     console.log(" " + board[7] + " | " + board[8] + " | " + board[9])
-
 }
-
-
-function getMovesLeft(board) {
-    let regex = /[1-9]/
-    let array = []
-    let i = 0
-    let space = null
-    for (let moves in board) {
-        space = board[moves].toString()
-        if (space.match(regex)) {
-            array[i] = board[moves].toString()
-            i = i + 1
-        }
-    }
-    return array
-}
-
-function winning(board, player) {
-    if (
-        (board[0] == player && board[1] == player && board[2] == player) ||
-        (board[3] == player && board[4] == player && board[5] == player) ||
-        (board[6] == player && board[7] == player && board[8] == player) ||
-        (board[0] == player && board[3] == player && board[6] == player) ||
-        (board[1] == player && board[4] == player && board[7] == player) ||
-        (board[2] == player && board[5] == player && board[8] == player) ||
-        (board[0] == player && board[4] == player && board[8] == player) ||
-        (board[2] == player && board[4] == player && board[6] == player)
-    ) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-function wintest() {
-
-    testUser("X")
-    testUser("O")
-
-    function testUser(u) {
-
-        if (board[1] === u && board[2] === u && board[3] === u) {
-            board[1] = "-"
-            board[2] = "-"
-            board[3] = "-"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[4] === u && board[5] === u && board[6] === u) {
-            board[4] = "-"
-            board[5] = "-"
-            board[6] = "-"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[7] === u && board[8] === u && board[9] === u) {
-            board[7] = "-"
-            board[8] = "-"
-            board[9] = "-"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[1] === u && board[4] === u && board[7] === u) {
-            board[1] = "|"
-            board[4] = "|"
-            board[7] = "|"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[2] === u && board[5] === u && board[8] === u) {
-            board[2] = "|"
-            board[5] = "|"
-            board[8] = "|"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[3] === u && board[6] === u && board[9] === u) {
-            board[3] = "|"
-            board[6] = "|"
-            board[9] = "|"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[1] === u && board[5] === u && board[9] === u) {
-            board[1] = "\\"
-            board[5] = "\\"
-            board[9] = "\\"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[7] === u && board[5] === u && board[3] === u) {
-            board[7] = "/"
-            board[5] = "/"
-            board[3] = "/"
-            console.log("\n" + u.toUpperCase() + " WINS!!!")
-            displayBoard(board)
-            console.log("\n")
-            process.exit()
-        }
-        else if (board[1] != 1 && board[2] != 2 && board[3] != 3 &&
-            board[4] != 4 && board[5] != 5 && board[6] != 6 &&
-            board[7] != 7 && board[8] != 8 && board[9] != 9) {
-            console.log("\n" + "Cat's game!!!"+"\n")
-            process.exit()
-        }
-    }
-}
-
 
 function changeUser() {
     // FIXME
@@ -275,5 +155,107 @@ function changeUser() {
     //console.log('User is NOW: ' + user);
     return user
 }
+
+function getMovesLeft(board) {
+    let regex = /[1-9]/
+    let array = []
+    let i = 0
+    let space = null
+    console.log ("Space is: " + space )
+    for (let moves in board) {
+        space = board[moves].toString()
+        if (space.match(regex)) {
+            array[i] = board[moves].toString()
+            i = i + 1
+            console.log ("Array is: " + array + " length is " + array.length)
+        }
+    }
+    console.log ("Array is: " + array + " length is " + array.length)
+    return array
+}
+
+
+
+function wintest(user) {
+
+    let winChar  // What character to change numbers to
+    let winNums = getWinState(user)
+
+    if (winType === "horizontal") { winChar = "-" }
+    if (winType === "vertical") { winChar = "|" }
+    if (winType === "backslash") { winChar = "\\" }
+    if (winType === "forwardslash") { winChar = "/" }
+
+    for (let w = 0; w < 3; w++) { board[w] = winChar }
+
+    console.log("\n" + user.toUpperCase() + " WINS!!!")
+    displayBoard(board)
+    console.log("\n")
+    process.exit()
+
+}
+
+
+function getWinState(u) {
+
+    let winArray = []
+
+    if (board[1] === u && board[2] === u && board[3] === u) {
+        winArray[0] = 1
+        winArray[1] = 2
+        winArray[2] = 3
+        winType = "horizontal"
+    }
+    else if (board[4] === u && board[5] === u && board[6] === u) {
+        winArray[0] = 4
+        winArray[1] = 5
+        winArray[2] = 6
+        winType = "horizontal"
+    }
+    else if (board[7] === u && board[8] === u && board[9] === u) {
+        winArray[0] = 7
+        winArray[1] = 8
+        winArray[2] = 9
+        winType = "horizontal"
+    }
+    else if (board[1] === u && board[4] === u && board[7] === u) {
+        winArray[0] = 1
+        winArray[1] = 4
+        winArray[2] = 7
+        winType = "vertical"
+    }
+    else if (board[2] === u && board[5] === u && board[8] === u) {
+        winArray[0] = 2
+        winArray[1] = 5
+        winArray[2] = 8
+        winType = "vertical"
+    }
+    else if (board[3] === u && board[6] === u && board[9] === u) {
+        winArray[0] = 3
+        winArray[1] = 6
+        winArray[2] = 9
+        winType = "vertical"
+    }
+    else if (board[1] === u && board[5] === u && board[9] === u) {
+        winArray[0] = 3
+        winArray[1] = 6
+        winArray[2] = 9
+        winType = "backslash"
+    }
+    else if (board[7] === u && board[5] === u && board[3] === u) {
+        winArray[0] = 3
+        winArray[1] = 6
+        winArray[2] = 9
+        winType = "forwardslash"
+    }
+    else if (board[1] != 1 && board[2] != 2 && board[3] != 3 &&
+        board[4] != 4 && board[5] != 5 && board[6] != 6 &&
+        board[7] != 7 && board[8] != 8 && board[9] != 9) {
+        console.log("\n" + "Cat's game!!!" + "\n")
+        process.exit()
+    }
+    return winArray
+}
+
 
 startGame();
