@@ -43,6 +43,7 @@ function configureGame(input) {
 }
 
 function listen() {
+    process.stdin.removeAllListeners('data')
     if (newT === true) { newTurn() }
     else if (newT === false) { newT = true }
 
@@ -82,6 +83,7 @@ function handleBotMove() {
 
     if (placeTaken(choice)) {
         //console.log("This space is taken! Go again!")
+        wintest()
         handleBotMove();
     }
     else {
@@ -89,6 +91,7 @@ function handleBotMove() {
         board[choice] = user.toUpperCase()
         changeUser();
         wintest()
+        listen()
     }
 }
 
@@ -122,6 +125,7 @@ function handleHumanTurn(move) {
         console.log('I AM THE CATCH ALL!!!')
         board[move] = user.toUpperCase()
         changeUser();
+        wintest()
         listen();
     }
 }
@@ -179,70 +183,78 @@ function wintest() {
             board[1] = "-"
             board[2] = "-"
             board[3] = "-"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[4] === u && board[5] === u && board[6] === u) {
             board[4] = "-"
             board[5] = "-"
             board[6] = "-"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[7] === u && board[8] === u && board[9] === u) {
             board[7] = "-"
             board[8] = "-"
             board[9] = "-"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[1] === u && board[4] === u && board[7] === u) {
             board[1] = "|"
             board[4] = "|"
             board[7] = "|"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[2] === u && board[5] === u && board[8] === u) {
             board[2] = "|"
             board[5] = "|"
             board[8] = "|"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[3] === u && board[6] === u && board[9] === u) {
             board[3] = "|"
             board[6] = "|"
             board[9] = "|"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[1] === u && board[5] === u && board[9] === u) {
             board[1] = "\\"
             board[5] = "\\"
             board[9] = "\\"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[7] === u && board[5] === u && board[3] === u) {
             board[7] = "/"
             board[5] = "/"
             board[3] = "/"
-            console.log(u.toUpperCase() + " WINS!!!")
+            console.log("\n" + u.toUpperCase() + " WINS!!!")
             displayBoard(board)
+            console.log("\n")
             process.exit()
         }
         else if (board[1] != 1 && board[2] != 2 && board[3] != 3 &&
             board[4] != 4 && board[5] != 5 && board[6] != 6 &&
             board[7] != 7 && board[8] != 8 && board[9] != 9) {
-            console.log("Cat's game!")
+            console.log("\n" + "Cat's game!!!"+"\n")
             process.exit()
         }
     }
